@@ -12,7 +12,7 @@
 
     <groupId>ru.ivi.opensource</groupId>
     <artifactId>flink-clickhouse-sink</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.1.1</version>
     <packaging>jar</packaging>
 
     <name>Flink Clickhouse sink</name>
@@ -21,14 +21,14 @@
         Flink sink for Clickhouse database. Powered by Async Http Client.
         High-performance library for loading data to Clickhouse.
     </description>
-    <url>https://github.com/ivi-ru/flink-clickhouse-sink.git</url>
+    <url>https://github.com/khiem291/flink-clickhouse-sink.git</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- Primary components -->
         <java.version>1.8</java.version>
-        <scala.version>2.11</scala.version>
-        <flink.version>1.9.0</flink.version>
+        <scala.version>2.12</scala.version>
+        <flink.version>1.10.0</flink.version>
 
         <!-- Secondary components -->
         <async.client.version>2.10.4</async.client.version>
@@ -52,7 +52,7 @@
     <scm>
         <connection>scm:git:git@github.com:ivi-ru/flink-clickhouse-sink.git</connection>
         <developerConnection>scm:git:git@github.com:ivi-ru/flink-clickhouse-sink.git</developerConnection>
-        <url>https://github.com/ivi-ru/flink-clickhouse-sink.git</url>
+        <url>https://github.com/khiem291/flink-clickhouse-sink.git</url>
     </scm>
 
     <distributionManagement>
@@ -176,14 +176,45 @@
     </dependencies>
 
     <build>
+        <finalName>SinkCH</finalName>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>settings.properties</include>
+                </includes>
+            </resource>
+        </resources>
         <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>ru.ivi.opensource.flinkclickhousesink.ClickhouseSink</mainClass>
+                        </manifest>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>${mvn.compiler.version}</version>
                 <configuration>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
+                    <source>8</source>
+                    <target>8</target>
                 </configuration>
             </plugin>
         </plugins>

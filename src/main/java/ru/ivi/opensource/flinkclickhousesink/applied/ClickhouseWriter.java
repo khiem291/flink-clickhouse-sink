@@ -223,7 +223,7 @@ public class ClickhouseWriter implements AutoCloseable {
         private void logFailedRecords(ClickhouseRequestBlank requestBlank) throws Exception {
             String filePath = String.format("%s/%s_%s",
                     sinkSettings.getFailedRecordsPath(),
-                    requestBlank.getTargetTable(),
+                    requestBlank.getTargetTable().split("\\(", 2)[0],
                     System.currentTimeMillis());
 
             try (PrintWriter writer = new PrintWriter(filePath)) {
