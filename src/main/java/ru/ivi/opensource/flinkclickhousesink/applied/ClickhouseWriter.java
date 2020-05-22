@@ -154,7 +154,8 @@ public class ClickhouseWriter implements AutoCloseable {
         private void send(ClickhouseRequestBlank requestBlank) {
             Request request = buildRequest(requestBlank);
 
-            logger.debug("Ready to load data to {}, size = {}", requestBlank.getTargetTable(), requestBlank.getValues().size());
+            logger.debug("Ready to load data to {}, size = {}",
+                requestBlank.getTargetTable().split("\\(", 2)[0], requestBlank.getValues().size());
             ListenableFuture<Response> whenResponse = asyncHttpClient.executeRequest(request);
 
             Runnable callback = responseCallback(whenResponse, requestBlank);
@@ -162,7 +163,7 @@ public class ClickhouseWriter implements AutoCloseable {
         }
 
         private Request buildRequest(ClickhouseRequestBlank requestBlank) {
-            String resultCSV = String.join(" , ", requestBlank.getValues());
+            String resultCSV = "( " + String.join("), (", requestBlank.getValues()) + " )";
             String query = String.format("INSERT INTO %s VALUES %s", requestBlank.getTargetTable(), resultCSV);
             String host = sinkSettings.getClickhouseClusterSettings().getRandomHostUrl();
 
@@ -189,7 +190,7 @@ public class ClickhouseWriter implements AutoCloseable {
                     } else {
                         logger.info("Successful send data to Clickhouse, batch size = {}, target table = {}, current attempt = {}",
                                 requestBlank.getValues().size(),
-                                requestBlank.getTargetTable(),
+                                requestBlank.getTargetTable().split("\\(", 2)[0],
                                 requestBlank.getAttemptCounter());
                     }
                 } catch (Exception e) {
@@ -211,7 +212,7 @@ public class ClickhouseWriter implements AutoCloseable {
             } else {
                 requestBlank.incrementCounter();
                 logger.warn("Next attempt to send data to Clickhouse, table = {}, buffer size = {}, current attempt num = {}, max attempt num = {}, response = {}",
-                        requestBlank.getTargetTable(),
+                        requestBlank.getTargetTable().split("\\(", 2)[0],
                         requestBlank.getValues().size(),
                         requestBlank.getAttemptCounter(),
                         sinkSettings.getMaxRetries(),

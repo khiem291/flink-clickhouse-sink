@@ -77,8 +77,6 @@ You have to convert this pojo like this:
 ```java
 public static String convertToCsv(A a) {
     StringBuilder builder = new StringBuilder();
-    builder.append("(");
-    
     // add a.str
     builder.append("'");
     builder.append(a.str);
@@ -86,7 +84,6 @@ public static String convertToCsv(A a) {
     
     // add a.intger
     builder.append(String.valueOf(a.integer));
-    builder.append(" )");
     return builder.toString();
 }
 ```
