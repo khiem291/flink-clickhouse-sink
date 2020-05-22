@@ -125,7 +125,7 @@ public YourEventConverter {
 
 // create props for sink
 Properties props = new Properties();
-props.put(ClickhouseSinkConsts.TARGET_TABLE_NAME, "your_table");
+props.put(ClickhouseSinkConsts.TARGET_TABLE_NAME, "your_table"); // table_name (col1, col2..), no column also OK.
 props.put(ClickhouseSinkConsts.MAX_BUFFER_SIZE, "10000"); //num record buffer
 
 // build chain
